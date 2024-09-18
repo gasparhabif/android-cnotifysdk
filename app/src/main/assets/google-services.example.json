@@ -1,0 +1,38 @@
+// ##########################
+//
+// IF YOU DON'T KNOW HOW TO GET THIS FILE
+// PLEASE FOLLOW THE INSTRUCTIONS BELOW:
+// https://support.google.com/firebase/answer/7015592?hl=en#zippy=%2Cin-this-article
+// USE THIS FILE ONLY TO CHECK THE STRUCTURE OF THE 
+// CORRESPONDING FILE FOR YOUR APP
+//
+// ##########################
+{
+  "project_info": {
+    "project_number": "{{YOUR-PROJECT-NUMBER}}",
+    "project_id": "{{YOUR-PROJECT-ID}}",
+    "storage_bucket": "{{YOUR-STORAGE-BUKCET}}"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "{{YOUR-MOBILESDK-APP-ID}}",
+        "android_client_info": {
+          "package_name": "{{YOUR-PACKAGE-NAME}}"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "{{YOUR-API-KEY}}"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
