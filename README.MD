@@ -1,0 +1,1 @@
+https://jitpack.io/#gasparhabif/android-cnotifysdk/0.0.2
