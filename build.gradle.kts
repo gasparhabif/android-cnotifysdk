@@ -10,3 +10,19 @@ buildscript {
         classpath(libs.android.maven.gradle.plugin)
     }
 }
+
+allprojects {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.jetbrains.kotlin") {
+            useVersion("1.7.10")
+        }
+    }
+}
