@@ -43,7 +43,7 @@ class CNotifySDK private constructor(
     }
 
     private fun initializeFirebase() {
-        printCNotifySDK("🚀 Initializing (Version: 0.2.2)")
+        printCNotifySDK("🚀 Initializing (Version: 0.2.3)")
         if (FirebaseApp.getApps(getContext()).isEmpty()) {
             printCNotifySDK("⚙️ Configuring Firebase app")
             FirebaseApp.initializeApp(getContext(), getFirebaseOptions())
@@ -106,20 +106,23 @@ class CNotifySDK private constructor(
 
     // Check Notification Permissions
     private fun checkPermissions() {
+        var hasPermissions = true
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val permission = ContextCompat.checkSelfPermission(
                 getContext(),
                 android.Manifest.permission.POST_NOTIFICATIONS
             )
             if (permission != PackageManager.PERMISSION_GRANTED) {
-                printCNotifySDK("Notifications permission not granted. Please request the permission and initialize the SDK again.")
-                return
+                printCNotifySDK("🚨 Notifications permission not granted. Please request the permission and initialize the SDK again. 🚨")
+                hasPermissions = false
             }
         }
 
         // If we're here, either the permission is granted or we're on an older Android version
-        printCNotifySDK("Notifications permission granted or not required")
-        registerForRemoteNotifications()
+        if(hasPermissions) {
+            printCNotifySDK("Notifications permission granted or not required")
+            registerForRemoteNotifications()
+        }
         subscribeToTopics()
     }
 

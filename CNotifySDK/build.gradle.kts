@@ -58,7 +58,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "me.cnotify"
             artifactId = "cnotify_android_sdk"
-            version = "0.2.2"
+            version = "0.2.3"
 
             afterEvaluate {
                 from(components["release"])
