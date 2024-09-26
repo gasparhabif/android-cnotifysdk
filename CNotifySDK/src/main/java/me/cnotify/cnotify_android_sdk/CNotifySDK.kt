@@ -40,7 +40,7 @@ class CNotifySDK private constructor(
     }
 
     private fun initializeFirebase() {
-        printCNotifySDK("Initializing (Version: 0.2.0)")
+        printCNotifySDK("Initializing (Version: 0.2.1)")
         if (FirebaseApp.getApps(getContext()).isEmpty()) {
             printCNotifySDK("Configuring Firebase app")
             FirebaseApp.initializeApp(getContext(), getFirebaseOptions())
