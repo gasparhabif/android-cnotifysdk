@@ -58,7 +58,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "me.cnotify"
             artifactId = "cnotify_android_sdk"
-            version = "0.1.1"
+            version = "0.2.0"
 
             afterEvaluate {
                 from(components["release"])
@@ -69,10 +69,10 @@ publishing {
                 description =
                     "This SDK is used to connect the integration with cnotify.me. It provides functionality for handling push notifications and integrating with the cnotify.me service."
                 url = "https://cnotify.me"
-                properties = mapOf(
-                    "myProp" to "value",
-                    "prop.with.dots" to "anotherValue"
-                )
+                // properties = mapOf(
+                //     "myProp" to "value",
+                //     "prop.with.dots" to "anotherValue"
+                // )
                 licenses {
                     license {
                         name = "The Apache License, Version 2.0"

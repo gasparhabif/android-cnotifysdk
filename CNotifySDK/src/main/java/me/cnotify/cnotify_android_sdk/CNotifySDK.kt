@@ -39,7 +39,7 @@ class CNotifySDK private constructor(
     }
 
     private fun initializeFirebase() {
-        printCNotifySDK("Initializing (Version: 0.1.1)")
+        printCNotifySDK("Initializing (Version: 0.2.0)")
         if (FirebaseApp.getApps(getContext()).isEmpty()) {
             printCNotifySDK("Configuring Firebase app")
             FirebaseApp.initializeApp(getContext(), getFirebaseOptions())
@@ -102,15 +102,15 @@ class CNotifySDK private constructor(
 
     // Request Notification Permissions
     private fun requestPermissions() {
-//        val notificationManager = NotificationManagerCompat.from(context)
-//        if (!notificationManager.areNotificationsEnabled()) {
-//            printCNotifySDK("Notifications permissions not granted, request permissions to user and init the SDK again.")
-//        } else {
-//            // Automatically register for notifications if permission is granted
-//            printCNotifySDK("Notifications permissions granted")
+       val notificationManager = NotificationManagerCompat.from(context)
+       if (!notificationManager.areNotificationsEnabled()) {
+           printCNotifySDK("Notifications permissions not granted, request permissions to user and init the SDK again.")
+       } else {
+            // Automatically register for notifications if permission is granted
+            printCNotifySDK("Notifications permissions granted")
             registerForRemoteNotifications()
             subscribeToTopics()
-//        }
+       }
     }
 
     private fun registerForRemoteNotifications() {
@@ -126,13 +126,23 @@ class CNotifySDK private constructor(
         printCNotifySDK("Starting topic subscription")
         val generator = CNotifyTopicGenerator()
         val topics = generator.getTopics(language = getLang(), country = getCountry(), appVersion = getAppVersion())
-        topics.forEach { topic ->
-            printCNotifySDK("Subscribing to topic: $topic")
-            subscribeTopic(topic)
-        }
 
-        if (testingMode) {
-            subscribeTopic("testing-debug")
+        val storage = CNotifyTopicStorage(getContext())
+        val previousTopics = storage.getSubscribedTopics()
+
+        // Check if any topic is different
+        if (topics.toSet() != previousTopics.toSet()) {
+            // Unsubscribe from all previous topics
+            for (topic in previousTopics) {
+                unsubscribeTopic(topic)
+            }
+            
+            // Subscribe to all new topics
+            storage.persistSubscribedTopics(topics)
+            topics.forEach { topic ->
+                printCNotifySDK("Subscribing to topic: $topic")
+                subscribeTopic(topic)
+            }
         }
 
         subscribedToTopics = true
@@ -145,7 +155,7 @@ class CNotifySDK private constructor(
                 if (!task.isSuccessful) {
                     completion?.invoke(task.exception)
                 } else {
-                    printCNotifySDK("Subscribed to topic: $topic")
+                    printCNotifySDK("Subscribed to topic: $topic successfully")
                 }
             }
     }
