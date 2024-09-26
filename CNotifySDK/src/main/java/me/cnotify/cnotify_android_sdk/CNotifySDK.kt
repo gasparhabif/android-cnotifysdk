@@ -14,6 +14,9 @@ import java.io.FileNotFoundException
 import java.io.FileReader
 import java.io.InputStreamReader
 import androidx.core.app.NotificationManagerCompat
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.core.content.ContextCompat
 
 class CNotifySDK private constructor(
     private val getContext: () -> Context,
@@ -52,7 +55,7 @@ class CNotifySDK private constructor(
         } else {
             printCNotifySDK("Firebase app is already configured.")
         }
-        requestPermissions()
+        checkPermissions()
     }
 
      private fun getFirebaseOptions(): FirebaseOptions {
@@ -101,17 +104,23 @@ class CNotifySDK private constructor(
          }
      }
 
-    // Request Notification Permissions
-    private fun requestPermissions() {
-       val notificationManager = NotificationManagerCompat.from(getContext())
-       if (!notificationManager.areNotificationsEnabled()) {
-           printCNotifySDK("Notifications permissions not granted, request permissions to user and init the SDK again.")
-       } else {
-            // Automatically register for notifications if permission is granted
-            printCNotifySDK("Notifications permissions granted")
-            registerForRemoteNotifications()
-            subscribeToTopics()
-       }
+    // Check Notification Permissions
+    private fun checkPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val permission = ContextCompat.checkSelfPermission(
+                getContext(),
+                android.Manifest.permission.POST_NOTIFICATIONS
+            )
+            if (permission != PackageManager.PERMISSION_GRANTED) {
+                printCNotifySDK("Notifications permission not granted. Please request the permission and initialize the SDK again.")
+                return
+            }
+        }
+
+        // If we're here, either the permission is granted or we're on an older Android version
+        printCNotifySDK("Notifications permission granted or not required")
+        registerForRemoteNotifications()
+        subscribeToTopics()
     }
 
     private fun registerForRemoteNotifications() {
@@ -120,11 +129,11 @@ class CNotifySDK private constructor(
 
     private fun subscribeToTopics() {
         if (subscribedToTopics) {
-            printCNotifySDK("Tried to subscribe to topics but already subscribed")
+            printCNotifySDK("🙅🏽‍♂️ Tried to subscribe to topics but already subscribed")
             return
         }
 
-        printCNotifySDK("Starting topic subscription")
+        printCNotifySDK("🔎 Starting topic subscription")
         val generator = CNotifyTopicGenerator()
         val topics = generator.getTopics(language = getLang(), country = getCountry(), appVersion = getAppVersion())
 
@@ -133,6 +142,7 @@ class CNotifySDK private constructor(
 
         // Check if any topic is different
         if (topics.toSet() != previousTopics.toSet()) {
+            printCNotifySDK("😳 Found changes in topics, subscribing to new topics")
             // Unsubscribe from all previous topics
             for (topic in previousTopics) {
                 unsubscribeTopic(topic)
@@ -141,13 +151,14 @@ class CNotifySDK private constructor(
             // Subscribe to all new topics
             storage.persistSubscribedTopics(topics)
             topics.forEach { topic ->
-                printCNotifySDK("Subscribing to topic: $topic")
                 subscribeTopic(topic)
             }
+        } else {
+            printCNotifySDK("🥳 Checked for topic changes but already subscribed to all topics (${topics.joinToString(", ")})")
         }
 
         subscribedToTopics = true
-        printCNotifySDK("Topic subscription ended")
+        printCNotifySDK("🏁 Topic subscription ended")
     }
 
     private fun subscribeTopic(topic: String, completion: ((Exception?) -> Unit)? = null) {
@@ -156,7 +167,7 @@ class CNotifySDK private constructor(
                 if (!task.isSuccessful) {
                     completion?.invoke(task.exception)
                 } else {
-                    printCNotifySDK("Subscribed to topic: $topic successfully")
+                    printCNotifySDK("🟢 Subscribed to topic: $topic")
                 }
             }
     }
@@ -167,7 +178,7 @@ class CNotifySDK private constructor(
                 if (!task.isSuccessful) {
                     completion?.invoke(task.exception)
                 } else {
-                    printCNotifySDK("Unsubscribed from topic: $topic successfully")
+                    printCNotifySDK("🟡 Unsubscribed from topic: $topic")
                 }
             }
     }
