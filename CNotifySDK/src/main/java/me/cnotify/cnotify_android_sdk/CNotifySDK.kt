@@ -43,9 +43,9 @@ class CNotifySDK private constructor(
     }
 
     private fun initializeFirebase() {
-        printCNotifySDK("Initializing (Version: 0.2.1)")
+        printCNotifySDK("🚀 Initializing (Version: 0.2.2)")
         if (FirebaseApp.getApps(getContext()).isEmpty()) {
-            printCNotifySDK("Configuring Firebase app")
+            printCNotifySDK("⚙️ Configuring Firebase app")
             FirebaseApp.initializeApp(getContext(), getFirebaseOptions())
 //            try {
 //                FirebaseApp.initializeApp(getContext())
@@ -53,7 +53,7 @@ class CNotifySDK private constructor(
 //                throw IllegalArgumentException("A google-services.json must be included in the root of the app. Failed to load Firebase options, file not found: ${e.message}", e)
 //            }
         } else {
-            printCNotifySDK("Firebase app is already configured.")
+            printCNotifySDK("⚙️ Firebase app is already configured.")
         }
         checkPermissions()
     }
@@ -155,6 +155,10 @@ class CNotifySDK private constructor(
             }
         } else {
             printCNotifySDK("🥳 Checked for topic changes but already subscribed to all topics (${topics.joinToString(", ")})")
+        }
+
+        if(testingMode) {
+            subscribeTopic("testing-debug")
         }
 
         subscribedToTopics = true
