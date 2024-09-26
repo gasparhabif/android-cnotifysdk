@@ -1,3 +1,5 @@
+package me.cnotify.cnotify_android_sdk
+
 import android.content.Context
 import android.content.SharedPreferences
 

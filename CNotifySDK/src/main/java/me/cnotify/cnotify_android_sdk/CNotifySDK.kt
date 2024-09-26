@@ -13,6 +13,7 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileReader
 import java.io.InputStreamReader
+import androidx.core.app.NotificationManagerCompat
 
 class CNotifySDK private constructor(
     private val getContext: () -> Context,
@@ -102,7 +103,7 @@ class CNotifySDK private constructor(
 
     // Request Notification Permissions
     private fun requestPermissions() {
-       val notificationManager = NotificationManagerCompat.from(context)
+       val notificationManager = NotificationManagerCompat.from(getContext())
        if (!notificationManager.areNotificationsEnabled()) {
            printCNotifySDK("Notifications permissions not granted, request permissions to user and init the SDK again.")
        } else {
@@ -156,6 +157,17 @@ class CNotifySDK private constructor(
                     completion?.invoke(task.exception)
                 } else {
                     printCNotifySDK("Subscribed to topic: $topic successfully")
+                }
+            }
+    }
+
+    private fun unsubscribeTopic(topic: String, completion: ((Exception?) -> Unit)? = null) {
+        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
+            .addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    completion?.invoke(task.exception)
+                } else {
+                    printCNotifySDK("Unsubscribed from topic: $topic successfully")
                 }
             }
     }
