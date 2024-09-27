@@ -43,17 +43,18 @@ class CNotifySDK private constructor(
     }
 
     private fun initializeFirebase() {
-        printCNotifySDK("🚀 Initializing (Version: 0.3.0)")
+        printCNotifySDK("🚀 Initializing (Version: 0.3.1)")
         if (FirebaseApp.getApps(getContext()).isEmpty()) {
             printCNotifySDK("⚙️ Configuring Firebase app")
             FirebaseApp.initializeApp(getContext(), getFirebaseOptions())
+            printCNotifySDK("⚙️ Successfully configured Firebase with project: ${FirebaseApp.getInstance()?.options?.projectId ?: "Unknown"}")
 //            try {
 //                FirebaseApp.initializeApp(getContext())
 //            } catch (e: Exception) {
 //                throw IllegalArgumentException("A google-services.json must be included in the root of the app. Failed to load Firebase options, file not found: ${e.message}", e)
 //            }
         } else {
-            printCNotifySDK("⚙️ Firebase app is already configured.")
+            printCNotifySDK("⚙️ Firebase app is already configured with project: ${FirebaseApp.getInstance()?.options?.projectId ?: "Unknown"}")
         }
         checkPermissions()
     }
