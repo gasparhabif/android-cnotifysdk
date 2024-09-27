@@ -1,7 +1,7 @@
 package me.cnotify.cnotify_android_sdk
 
 class CNotifyTopicGenerator {
-    private val baseTopic = "eruka_"
+    private val baseTopic = "cnotify_"
     private val allUsersTopic = "-all_users"
     private val audienceSeparator = "_aud"
 
