@@ -1,22 +1,19 @@
 package me.cnotify.cnotify_android_sdk
 
 import android.content.Context
-import com.google.firebase.FirebaseApp
-import com.google.firebase.messaging.FirebaseMessaging
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
+import androidx.core.content.ContextCompat
+import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import java.io.File
 import java.io.FileNotFoundException
-import java.io.FileReader
 import java.io.InputStreamReader
-import androidx.core.app.NotificationManagerCompat
-import android.content.pm.PackageManager
-import android.os.Build
-import androidx.core.content.ContextCompat
 
 class CNotifySDK private constructor(
     private val getContext: () -> Context,
@@ -43,18 +40,18 @@ class CNotifySDK private constructor(
     }
 
     private fun initializeFirebase() {
-        printCNotifySDK("🚀 Initializing (Version: 0.3.1)")
+        printCNotifySDK("🚀 Initializing (Version: 0.3.2)")
         if (FirebaseApp.getApps(getContext()).isEmpty()) {
             printCNotifySDK("⚙️ Configuring Firebase app")
             FirebaseApp.initializeApp(getContext(), getFirebaseOptions())
-            printCNotifySDK("⚙️ Successfully configured Firebase with project: ${FirebaseApp.getInstance()?.options?.projectId ?: "Unknown"}")
+            printCNotifySDK("⚙️ Successfully configured Firebase with project: ${FirebaseApp.getInstance().options.projectId ?: "Unknown"}")
 //            try {
 //                FirebaseApp.initializeApp(getContext())
 //            } catch (e: Exception) {
 //                throw IllegalArgumentException("A google-services.json must be included in the root of the app. Failed to load Firebase options, file not found: ${e.message}", e)
 //            }
         } else {
-            printCNotifySDK("⚙️ Firebase app is already configured with project: ${FirebaseApp.getInstance()?.options?.projectId ?: "Unknown"}")
+            printCNotifySDK("⚙️ Firebase app is already configured with project: ${FirebaseApp.getInstance().options.projectId ?: "Unknown"}")
         }
         checkPermissions()
     }

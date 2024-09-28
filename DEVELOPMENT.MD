@@ -1,7 +1,13 @@
+# CNotifySDK Development
+
+## Status
+[JitPack](https://jitpack.io/#gasparhabif/android-cnotifysdk/main)
+
 ## Publishing
-1. Add code and increment version in `CNotifySDK/build.gradle.kts` and any other locations
+1. Add code and increment version in `CNotifySDK/build.gradle.kts`, `gradle.properties` and any other locations
 2. Push a new git tag corresponding to that version
-3. Run `gradle wrapper` in the root of this project
+3. Run `gradle wrapper` in the root of this project (This will publish it to JitPack)
+4. Run `./gradlew publishAllPublicationsToCentralPortal` in the root of this project (This will publish it to MavenCentral)
 
 
 ## Add it to your app
@@ -33,6 +39,9 @@ Fragment code to request notification permission and initialize the CNotifySDK:
     }
 ```
 
-https://medium.com/@zurcher/create-and-distribute-your-own-android-library-after-reading-this-post-c3187a2a0691#.f9rq4y8kq
 
-https://jitpack.io/#gasparhabif/android-cnotifysdk/main
+## References
+- [Developing a library](https://medium.com/@zurcher/create-and-distribute-your-own-android-library-after-reading-this-post-c3187a2a0691#.f9rq4y8kq)
+- [Publishing to MavenCentral](https://medium.com/@iRYO400/how-to-upload-your-android-library-to-maven-central-central-portal-in-2024-af7348742247)
+
+

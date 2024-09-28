@@ -1,7 +1,11 @@
+// import com.vanniktech.maven.publish.AndroidSingleVariantLibrary
+
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     `maven-publish`
+    id("com.vanniktech.maven.publish") version "0.29.0" apply false
+    id("com.gradleup.nmcp") version "0.0.8" apply false
 }
 
 android {
@@ -58,7 +62,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "me.cnotify"
             artifactId = "cnotify_android_sdk"
-            version = "0.3.1"
+            version = "0.3.2"
 
             afterEvaluate {
                 from(components["release"])
@@ -69,14 +73,10 @@ publishing {
                 description =
                     "This SDK is used to connect the integration with cnotify.me. It provides functionality for handling push notifications and integrating with the cnotify.me service."
                 url = "https://cnotify.me"
-                // properties = mapOf(
-                //     "myProp" to "value",
-                //     "prop.with.dots" to "anotherValue"
-                // )
                 licenses {
                     license {
-                        name = "The Apache License, Version 2.0"
-                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                        name = "MIT"
+                        url = "https://github.com/gasparhabif/android-cnotifysdk/blob/main/LICENSE"
                     }
                 }
                 developers {
@@ -100,3 +100,24 @@ publishing {
         }
     }
 }
+
+// mavenPublishing {
+//   configure(
+//       AndroidSingleVariantLibrary(
+//     // the published variant
+//     variant = "release",
+//     // whether to publish a sources jar
+//     sourcesJar = true,
+//     // whether to publish a javadoc jar
+//     publishJavadocJar = true,
+//   )
+//   )
+// }
+
+// mavenPublishing {
+//   configure(GradlePublishPlugin())
+// }
+
+// tasks.register("publishAllPublicationsToCentralPortal") {
+//     dependsOn("publish")
+// }

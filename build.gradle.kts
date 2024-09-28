@@ -3,6 +3,10 @@ plugins {
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.jetbrainsKotlinAndroid) apply false
     alias(libs.plugins.androidLibrary) apply false
+    id("com.vanniktech.maven.publish") version "0.29.0" apply false
+    id("com.gradleup.nmcp") version "0.0.8" 
+    signing
+
 }
 
 buildscript {
@@ -17,6 +21,20 @@ allprojects {
             jvmTarget = "1.8"
         }
     }
+}
+
+nmcp {
+  publishAllProjectsProbablyBreakingProjectIsolation {
+    username = project.properties["SONATYPE_USERNAME"] as String
+    password = project.properties["SONATYPE_PASSWORD"] as String
+
+    publicationType = "AUTOMATIC"
+  }
+}
+
+signing {
+    useGpgCmd()
+//    sign(publishing.publications["mavenJava"])
 }
 
 configurations.all {
