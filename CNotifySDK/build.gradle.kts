@@ -1,3 +1,5 @@
+import com.google.gson.Gson
+
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -8,6 +10,10 @@ android {
     namespace = "me.cnotify.cnotify_android_sdk"
     compileSdk = 34
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         minSdk = 24
         aarMetadata {
@@ -15,6 +21,39 @@ android {
         }
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        // We parse the google-services.json file in build-time
+        buildConfigField("String", "CNTFY_FIREBASE_PROJECT_ID", "\"-1\"")
+        buildConfigField("String", "CNTFY_FIREBASE_API_KEY", "\"-1\"")
+        buildConfigField("String", "CNTFY_FIREBASE_APP_ID", "\"-1\"")
+        buildConfigField("String", "CNTFY_FIREBASE_MESSAGING_SENDER_ID", "\"-1\"")
+
+
+        val googleServicesJsonFile = file("../app/src/main/google-services.json")
+        if (googleServicesJsonFile.exists()) {
+            val gson = Gson()
+            try {
+                val jsonText = googleServicesJsonFile.readText()
+                val mapType = object : com.google.gson.reflect.TypeToken<Map<String, Any>>() {}.type
+                val jsonMap: Map<String, Any> = gson.fromJson(jsonText, mapType)
+                val projectId = (jsonMap["project_info"] as Map<*, *>)["project_id"] as String
+                val gClient = (jsonMap["client"] as List<*>)[0] as Map<*, *>
+                val gRawApiKey = gClient["api_key"] as List<*>
+                val gApiKey = gRawApiKey[0] as Map<*, *>
+                val apiKey = gApiKey["current_key"] as String
+                val gClientInfo = gClient["client_info"] as Map<*, *>
+                val appId = gClientInfo["mobilesdk_app_id"] as String
+                val messagingSenderId = (jsonMap["project_info"] as Map<*, *>)["project_number"] as String
+
+
+                buildConfigField("String", "CNTFY_FIREBASE_PROJECT_ID", "\"$projectId\"")
+                buildConfigField("String", "CNTFY_FIREBASE_API_KEY", "\"$apiKey\"")
+                buildConfigField("String", "CNTFY_FIREBASE_APP_ID", "\"$appId\"")
+                buildConfigField("String", "CNTFY_FIREBASE_MESSAGING_SENDER_ID", "\"$messagingSenderId\"")
+            } catch (e: Exception) {
+                throw RuntimeException("Error al parsear google-services.json: ${e.message}")
+            }
+        }
     }
 
     buildTypes {
@@ -51,6 +90,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // With this dependency, the SDK will be able to parse the GoogleServices.json
+    implementation(libs.gson.v210)
 }
 
 publishing {
@@ -58,7 +100,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "me.cnotify"
             artifactId = "cnotify_android_sdk"
-            version = "0.3.1"
+            version = "0.3.2"
 
             afterEvaluate {
                 from(components["release"])

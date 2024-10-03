@@ -1,22 +1,19 @@
 package me.cnotify.cnotify_android_sdk
 
 import android.content.Context
-import com.google.firebase.FirebaseApp
-import com.google.firebase.messaging.FirebaseMessaging
+import android.content.pm.PackageManager
+import android.os.Build
 import android.util.Log
+import androidx.core.content.ContextCompat
+import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import java.io.File
 import java.io.FileNotFoundException
-import java.io.FileReader
 import java.io.InputStreamReader
-import androidx.core.app.NotificationManagerCompat
-import android.content.pm.PackageManager
-import android.os.Build
-import androidx.core.content.ContextCompat
 
 class CNotifySDK private constructor(
     private val getContext: () -> Context,
@@ -43,7 +40,7 @@ class CNotifySDK private constructor(
     }
 
     private fun initializeFirebase() {
-        printCNotifySDK("🚀 Initializing (Version: 0.3.1)")
+        printCNotifySDK("🚀 Initializing (Version: 0.3.2)")
         if (FirebaseApp.getApps(getContext()).isEmpty()) {
             printCNotifySDK("⚙️ Configuring Firebase app")
             FirebaseApp.initializeApp(getContext(), getFirebaseOptions())
@@ -61,11 +58,24 @@ class CNotifySDK private constructor(
 
      private fun getFirebaseOptions(): FirebaseOptions {
          try {
+             if(filePath == null){
+                 printCNotifySDK("🔍 Loading Firebase options from google-services.json (default location)")
+                 // Initialize Firebase using the default location of the google-services.json file
+                 return FirebaseOptions.Builder()
+                     .setApiKey(BuildConfig.CNTFY_FIREBASE_API_KEY)
+                     .setProjectId(BuildConfig.CNTFY_FIREBASE_PROJECT_ID)
+                     .setApplicationId(BuildConfig.CNTFY_FIREBASE_APP_ID)
+                     .setGcmSenderId(BuildConfig.CNTFY_FIREBASE_MESSAGING_SENDER_ID)
+                     .build()
+             }
+
+            val fileToUse = filePath ?: "google-services.json"
+            printCNotifySDK("🔍 Loading Firebase options from google-services.json (custom location: $fileToUse)")
+
              val context = getContext()
             // Check if the file exists in the assets folder
             val fileList = context.assets.list("") ?: throw FileNotFoundException("Assets folder is empty. It must have the google-services.json file.")
 
-            val fileToUse = filePath ?: "google-services.json"
             if (!fileList.contains(fileToUse)) {
                 // Throw an exception if the file doesn't exist
                 throw FileNotFoundException("The file $fileToUse does not exist in the assets folder.")
