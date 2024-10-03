@@ -58,7 +58,7 @@ class CNotifySDK private constructor(
 
      private fun getFirebaseOptions(): FirebaseOptions {
          try {
-             if(filePath == null){
+             if(filePath == null && BuildConfig.CNTFY_FIREBASE_API_KEY != "-1") {
                  printCNotifySDK("🔍 Loading Firebase options from google-services.json (default location)")
                  // Initialize Firebase using the default location of the google-services.json file
                  return FirebaseOptions.Builder()
