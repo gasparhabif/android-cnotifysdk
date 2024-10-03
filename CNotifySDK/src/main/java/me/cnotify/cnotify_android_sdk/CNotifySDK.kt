@@ -40,7 +40,7 @@ class CNotifySDK private constructor(
     }
 
     private fun initializeFirebase() {
-        printCNotifySDK("🚀 Initializing (Version: 0.3.2)")
+        printCNotifySDK("🚀 Initializing (Version: 0.3.3)")
         if (FirebaseApp.getApps(getContext()).isEmpty()) {
             printCNotifySDK("⚙️ Configuring Firebase app")
             FirebaseApp.initializeApp(getContext(), getFirebaseOptions())
@@ -58,7 +58,7 @@ class CNotifySDK private constructor(
 
      private fun getFirebaseOptions(): FirebaseOptions {
          try {
-             if(filePath == null){
+             if(filePath == null && BuildConfig.CNTFY_FIREBASE_API_KEY != "-1") {
                  printCNotifySDK("🔍 Loading Firebase options from google-services.json (default location)")
                  // Initialize Firebase using the default location of the google-services.json file
                  return FirebaseOptions.Builder()
