@@ -29,7 +29,7 @@ android {
         buildConfigField("String", "CNTFY_FIREBASE_MESSAGING_SENDER_ID", "\"-1\"")
 
 
-        val googleServicesJsonFile = file("../app/src/main/google-services.json")
+        val googleServicesJsonFile = file("app/src/main/google-services.json")
         if (googleServicesJsonFile.exists()) {
             val gson = Gson()
             try {
@@ -100,7 +100,7 @@ publishing {
         register<MavenPublication>("release") {
             groupId = "me.cnotify"
             artifactId = "cnotify_android_sdk"
-            version = "0.3.3"
+            version = "0.3.4"
 
             afterEvaluate {
                 from(components["release"])
